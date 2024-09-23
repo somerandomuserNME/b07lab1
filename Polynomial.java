@@ -13,7 +13,8 @@ class Polynomial{
         }
     }
 
-    public double[] add(double[] array){
+    public Polynomial add(Polynomial p){
+        double[] array = p.coefficients;
         int maxLength;
         if(array.length >= coefficients.length){
             maxLength = array.length;
@@ -42,7 +43,8 @@ class Polynomial{
 
             newCoefficients[i] = first + second;
         }
-        return newCoefficients;
+        Polynomial pNew = new Polynomial(newCoefficients);
+        return pNew;
     }
 
     public double evaluate(double x){
