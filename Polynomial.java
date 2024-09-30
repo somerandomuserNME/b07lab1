@@ -1,6 +1,4 @@
 import java.util.HashMap;
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.Scanner;
 import java.io.*;
 
@@ -82,12 +80,7 @@ class Polynomial{
             else{
                 int expo = 0;
                 double coeff = Double.parseDouble(term);
-                if(polynomialDict.containsKey(expo)){
-                    polynomialDict.put(expo, polynomialDict.get(0) + coeff);
-                }
-                else{
-                    polynomialDict.put(expo, coeff);
-                }
+                polynomialDict.put(expo, polynomialDict.getOrDefault(expo, 0.0) + coeff);
             }
         }
 
@@ -121,7 +114,7 @@ class Polynomial{
                 writer.write("-");
             }
 
-            if(expo > 1){
+            if(expo >= 1){
                 writer.write("x");
                 if(expo > 1){
                     writer.write(String.valueOf(expo));
@@ -153,58 +146,33 @@ class Polynomial{
         HashMap<Integer, Double> finPoly = new HashMap<>();
 
         for(Integer key : poly1.keySet()){
-            finPoly.put(key, poly1.get(key));
+            finPoly.put(key, finPoly.getOrDefault(key, 0.0) + poly2.getOrDefault(key, 0.0));
         }
 
-        for(Integer key : poly2.keySet()){
-            if(finPoly.containsKey(key)){
-                finPoly.put(key, finPoly.get(key) + poly2.get(key));
-            }
-            else{
-                finPoly.put(key, poly2.get(key));
-            }
-        }
         Polynomial finalPolynomial = new Polynomial(finPoly);
         
         return finalPolynomial;
     }
 
     public Polynomial multiply(Polynomial p){
-        double[] arrayC1 = this.coefficients;
-        int[] arrayE1 = this.exponents;
-
-        double[] arrayC2 = p.coefficients;
-        int[] arrayE2 = p.exponents;
-
-        HashMap<Integer, Double> poly1 = new HashMap<>();
-        HashMap<Integer, Double> poly2 = new HashMap<>();
-
-        for(int i = 0; i < arrayE1.length; i++){
-            poly1.put(arrayE1[i], arrayC1[i]);
-        }
-
-        for(int i = 0; i < arrayE2.length; i++){
-            poly2.put(arrayE2[i], arrayC2[i]);
-        }
-
         HashMap<Integer, Double> finPoly = new HashMap<>();
 
-        int keyNew;
-        double valueNew;
-        for(Integer key1 : poly1.keySet()){
-            for(Integer key2 : poly2.keySet()){
-                keyNew = key1 + key2;
-                valueNew = poly1.get(key1) * poly2.get(key2);
-                if(finPoly.containsKey(keyNew)){
-                    finPoly.put(keyNew, finPoly.get(keyNew) + valueNew);
-                }
-                else{
-                    finPoly.put(keyNew, valueNew);
-                }
+        for(int i = 0; i < this.exponents.length; i++){
+            int expo1 = this.exponents[i];
+            double coeff1 = this.coefficients[i];
+
+            for(int j = 0; j < p.exponents.length; j++){
+                int expo2 = p.exponents[i];
+                double coeff2 = p.coefficients[i];
+
+                int newExpo = expo1 + expo2;
+                double newCoeff = coeff1 * coeff2;
+
+                finPoly.put(newExpo, finPoly.getOrDefault(newExpo, 0.0) + newCoeff);
             }
         }
-        Polynomial finalPolynomial = new Polynomial(finPoly);
         
+        Polynomial finalPolynomial = new Polynomial(finPoly);
         return finalPolynomial;
     }
 
